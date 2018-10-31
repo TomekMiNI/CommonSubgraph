@@ -39,12 +39,13 @@ namespace TAIO
             }
             Console.Write(Graph.convertFromMatrix(G1));
             Console.Write(Graph.convertFromMatrix(G2));
-            Graph gC = new Graph();
+            Graph gMax = new Graph(), gC = new Graph();
             int maxCount = calculateMaxOfEdges(G1, G2);
-            MCS(G1, G2, new Graph(), new Graph(), ref gC, maxCount);
-            Console.Write("Final graph: \n{0}", gC);
+            MCS(G1, G2, new Graph(), new Graph(), ref gMax, ref gC, maxCount);
+            Console.Write("Final graph: \n{0}", gMax);
+            Console.Write("Corresponding: \n{0}", gC);
         }
-        public static void MCS(int[,] G1, int[,] G2, Graph SG1, Graph SG2, ref Graph theBEST, int max)
+        public static void MCS(int[,] G1, int[,] G2, Graph SG1, Graph SG2, ref Graph theBEST, ref Graph corresponding, int max)
         {
             Graph copySG1 = SG1.Copy();
             Graph copySG2 = SG2.Copy();
@@ -66,12 +67,14 @@ namespace TAIO
                     if (pairIsFeasible(copySG1, e, copySG2, e2, countOfAddedV1, countOfAddedV2))
                     {
                         //Console.WriteLine("they correspond themselves!");
-                        MCS(G1, G2, copySG1, copySG2, ref theBEST, max);
+                        MCS(G1, G2, copySG1, copySG2, ref theBEST, ref corresponding, max);
                         if (theBEST.E.Count < copySG1.E.Count)
                         {
                             Console.Write("Poprawka\n");
                             theBEST = copySG1.Copy();
+                            corresponding = copySG2.Copy();
                             Console.WriteLine(theBEST);
+                            Console.WriteLine(corresponding);
                         }
                         if (theBEST.E.Count == max)
                             return;
